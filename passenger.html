@@ -1,0 +1,30 @@
+ECHO is on.
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pasajero</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+</head>
+<body>
+    <h1>Pasajero</h1>
+    <div id="map" style="height: 500px; width: 100%;"></div>
+    <script>
+        const socket = io('http://localhost:3000');
+        const map = L.map('map').setView([19.432608, -99.133209], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+        let marker = null;
+        socket.on('operatorLocation', (ubicacion) => {
+            if (!marker) {
+                marker = L.marker([ubicacion.lat, ubicacion.lng]).addTo(map);
+            } else {
+                marker.setLatLng([ubicacion.lat, ubicacion.lng]);
+            }
+            map.setView([ubicacion.lat, ubicacion.lng], 13);
+        });
+    </script>
+</body>
+</html>
